@@ -54,6 +54,10 @@ class Vec3
              (self.e[0]*v2.e[1] - self.e[1]*v2.e[0]))
   end
 
+  def mul(v2)
+    Vec3.new(self.e[0]*v2.e[0], self.e[1]*v2.e[1], self.e[2]*v2.e[2])
+  end
+
   def to_s
     "#{e[0]} #{e[1]} #{e[2]}"
   end
@@ -73,5 +77,9 @@ class Vec3
 
   def unit_vector
     self / self.length
+  end
+
+  def reflect(n)
+    self - n*2.0*self.dot(n)
   end
 end

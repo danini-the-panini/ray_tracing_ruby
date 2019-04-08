@@ -1,22 +1,7 @@
 require_relative './vec3'
 
-class Ray
-  attr_reader :a, :b
-
-  def initialize(a, b)
-    @a = a
-    @b = b
-  end
-
-  def origin
-    a
-  end
-
-  def direction
-    b
-  end
-
+class Ray < Struct.new(:origin, :direction)
   def point_at_parameter(t)
-    a + b*t
+    origin + direction*t
   end
 end

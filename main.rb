@@ -1,6 +1,8 @@
 require_relative './sphere'
 require_relative './hitable_list'
 require_relative './camera'
+require_relative './lambertian'
+require_relative './metal'
 
 def random_in_unit_sphere
   p = Vec3.new
@@ -11,11 +13,17 @@ def random_in_unit_sphere
   p
 end
 
-def color(r, world)
+def color(r, world, depth)
   rec = HitRecord.new
   if world.hit(r, 0.001, Float::INFINITY, rec)
-    target = rec.p + rec.normal + random_in_unit_sphere
-    return color(Ray.new(rec.p, target-rec.p), world)*0.5
+    scattered = Ray.new
+    attenuation = Vec3.new
+
+    if depth < 50 && rec.mat.scatter(r, rec, attenuation, scattered)
+      attenuation.mul(color(scattered, world, depth+1))
+    else
+      Vec3.new(0.0, 0.0, 0.0)
+    end
   else
     unit_direction = r.direction.unit_vector
     t = 0.5*(unit_direction.y + 1.0)
@@ -31,14 +39,11 @@ puts "#{nx} #{ny}"
 puts "255"
 ns = 100
 
-lower_left_corner = Vec3.new(-2.0, -1.0, -1.0)
-horizontal = Vec3.new(4.0, 0.0, 0.0)
-vertical = Vec3.new(0.0, 2.0, 0.0)
-origin = Vec3.new(0.0, 0.0, 0.0)
-
 list = [
-  Sphere.new(Vec3.new(0.0, 0.0, -1.0), 0.5),
-  Sphere.new(Vec3.new(0.0, -100.5, -1.0), 100)
+  Sphere.new(Vec3.new(0.0, 0.0, -1.0), 0.5, Lambertian.new(Vec3.new(0.8, 0.3, 0.3))),
+  Sphere.new(Vec3.new(0.0, -100.5, -1.0), 100, Lambertian.new(Vec3.new(0.8, 0.8, 0.0))),
+  Sphere.new(Vec3.new(1.0, 0.0, -1.0), 0.5, Metal.new(Vec3.new(0.8, 0.6, 0.2))),
+  Sphere.new(Vec3.new(-1.0, 0.0, -1.0), 0.5, Metal.new(Vec3.new(0.8, 0.8, 0.8)))
 ]
 world = HitableList.new(list)
 
@@ -51,8 +56,7 @@ cam = Camera.new
       u = (i + rand).to_f / nx.to_f
       v = (j + rand).to_f / ny.to_f
       r = cam.get_ray(u, v)
-      p = r.point_at_parameter(2.0)
-      col += color(r, world)
+      col += color(r, world, 0)
     end
     col /= ns.to_f
     col = Vec3.new(Math.sqrt(col[0]), Math.sqrt(col[1]), Math.sqrt(col[2]))
