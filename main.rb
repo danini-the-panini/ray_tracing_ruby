@@ -2,10 +2,20 @@ require_relative './sphere'
 require_relative './hitable_list'
 require_relative './camera'
 
+def random_in_unit_sphere
+  p = Vec3.new
+  loop do
+    p = Vec3.new(rand, rand, rand)*2.0 - Vec3.new(1.0, 1.0, 1.0)
+    break if p.squared_length >= 1.0
+  end
+  p
+end
+
 def color(r, world)
   rec = HitRecord.new
   if world.hit(r, 0.0, Float::INFINITY, rec)
-    return Vec3.new(rec.normal.x+1.0, rec.normal.y+1.0, rec.normal.z+1.0)*0.5
+    target = rec.p + rec.normal + random_in_unit_sphere
+    return color(Ray.new(rec.p, target-rec.p), world)*0.5
   else
     unit_direction = r.direction.unit_vector
     t = 0.5*(unit_direction.y + 1.0)
