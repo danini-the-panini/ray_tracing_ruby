@@ -50,7 +50,12 @@ list = [
 ]
 world = HitableList.new(list)
 
-cam = Camera.new(Vec3.new(-2.0, 2.0, 1.0), Vec3.new(0.0, 0.0, -1.0), Vec3.new(0.0, 1.0, 0.0), 20.0, nx.to_f/ny.to_f)
+lookfrom = Vec3.new(3.0, 3.0, 2.0)
+lookat = Vec3.new(0.0, 0.0, -1.0)
+dist_to_focus = (lookfrom-lookat).length
+aperture = 2.0
+
+cam = Camera.new(lookfrom, lookat, Vec3.new(0.0, 1.0, 0.0), 20.0, nx.to_f/ny.to_f, aperture, dist_to_focus)
 
 (ny-1).downto(0) do |j|
   0.upto(nx-1) do |i|
