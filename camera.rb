@@ -3,14 +3,17 @@ require_relative './ray'
 class Camera
   attr_reader :origin, :lower_left_corner, :horizontal, :vertical
 
-  def initialize(vfov, aspect)
+  def initialize(lookfrom, lookat, vup, vfov, aspect)
     theta = vfov*Math::PI/180.0
     half_height = Math.tan(theta/2.0)
     half_width = aspect * half_height
-    @lower_left_corner = Vec3.new(-half_width, -half_height, -1.0)
-    @horizontal = Vec3.new(2.0*half_width, 0.0, 0.0)
-    @vertical = Vec3.new(0.0, 2.0*half_height, 0.0)
-    @origin = Vec3.new(0.0, 0.0, 0.0)
+    @origin = lookfrom
+    w = (lookfrom - lookat).unit_vector
+    u = vup.cross(w).unit_vector
+    v = w.cross(u)
+    @lower_left_corner = origin - u*half_width - v*half_height - w
+    @horizontal = u*2.0*half_width
+    @vertical = v*2.0*half_height
   end
 
   def get_ray(u, v)
