@@ -1,6 +1,24 @@
 require_relative './ray'
 
+def hit_sphere(center, radius, r)
+  oc = r.origin - center
+  a = r.direction.dot(r.direction)
+  b = 2.0 * oc.dot(r.direction)
+  c = oc.dot(oc) - radius*radius
+  discriminant = b*b - 4.0*a*c
+  if discriminant < 0
+    -1.0
+  else
+    (-b - Math.sqrt(discriminant)) / (2.0*a)
+  end
+end
+
 def color(r)
+  t = hit_sphere(Vec3.new(0.0, 0.0, -1.0), 0.5, r)
+  if t > 0.0
+    n = (r.point_at_parameter(t) - Vec3.new(0.0, 0.0, -1.0)).unit_vector
+    return Vec3.new(n.x+1.0, n.y+1.0, n.z+1.0)*0.5
+  end
   unit_direction = r.direction.unit_vector
   t = 0.5*(unit_direction.y + 1.0)
   Vec3.new(1.0, 1.0, 1.0)*(1.0-t) + Vec3.new(0.5, 0.7, 1.0)*t
