@@ -17,6 +17,6 @@ class Ray
   end
 
   def point_at_parameter(t)
-    a + t*b
+    a + b*t
   end
 end
