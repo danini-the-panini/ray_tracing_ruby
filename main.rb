@@ -1,5 +1,6 @@
 require_relative './sphere'
 require_relative './hitable_list'
+require_relative './camera'
 
 def color(r, world)
   rec = HitRecord.new
@@ -18,6 +19,7 @@ ny = 100
 puts "P3"
 puts "#{nx} #{ny}"
 puts "255"
+ns = 100
 
 lower_left_corner = Vec3.new(-2.0, -1.0, -1.0)
 horizontal = Vec3.new(4.0, 0.0, 0.0)
@@ -30,14 +32,19 @@ list = [
 ]
 world = HitableList.new(list)
 
+cam = Camera.new
+
 (ny-1).downto(0) do |j|
   0.upto(nx-1) do |i|
-    u = i.to_f / nx.to_f
-    v = j.to_f / ny.to_f
-    r = Ray.new(origin, lower_left_corner + horizontal*u + vertical*v)
-
-    p = r.point_at_parameter(2.0)
-    col = color(r, world)
+    col = Vec3.new(0.0, 0.0, 0.0)
+    0.upto(ns-1) do
+      u = (i + rand).to_f / nx.to_f
+      v = (j + rand).to_f / ny.to_f
+      r = cam.get_ray(u, v)
+      p = r.point_at_parameter(2.0)
+      col += color(r, world)
+    end
+    col /= ns.to_f
 
     ir = (255.99*col[0]).to_i
     ig = (255.99*col[1]).to_i
