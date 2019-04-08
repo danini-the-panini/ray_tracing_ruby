@@ -40,16 +40,19 @@ puts "#{nx} #{ny}"
 puts "255"
 ns = 100
 
+r = Math.cos(Math::PI/4.0)
 list = [
-  Sphere.new(Vec3.new(0.0, 0.0, -1.0), 0.5, Lambertian.new(Vec3.new(0.8, 0.3, 0.3))),
-  Sphere.new(Vec3.new(0.0, -100.5, -1.0), 100, Lambertian.new(Vec3.new(0.8, 0.8, 0.0))),
-  Sphere.new(Vec3.new(1.0, 0.0, -1.0), 0.5, Metal.new(Vec3.new(0.8, 0.6, 0.2), 0.3)),
-  Sphere.new(Vec3.new(-1.0, 0.0, -1.0), 0.5, Dielectric.new(1.5)),
-  Sphere.new(Vec3.new(-1.0, 0.0, -1.0), -0.45, Dielectric.new(1.5))
+  # Sphere.new(Vec3.new(0.0, 0.0, -1.0), 0.5, Lambertian.new(Vec3.new(0.8, 0.3, 0.3))),
+  # Sphere.new(Vec3.new(0.0, -100.5, -1.0), 100, Lambertian.new(Vec3.new(0.8, 0.8, 0.0))),
+  # Sphere.new(Vec3.new(1.0, 0.0, -1.0), 0.5, Metal.new(Vec3.new(0.8, 0.6, 0.2), 0.3)),
+  # Sphere.new(Vec3.new(-1.0, 0.0, -1.0), 0.5, Dielectric.new(1.5)),
+  # Sphere.new(Vec3.new(-1.0, 0.0, -1.0), -0.45, Dielectric.new(1.5)),
+  Sphere.new(Vec3.new(-r, 0.0, -1.0), r, Lambertian.new(Vec3.new(0.0, 0.0, 1.0))),
+  Sphere.new(Vec3.new( r, 0.0, -1.0), r, Lambertian.new(Vec3.new(1.0, 0.0, 0.0))),
 ]
 world = HitableList.new(list)
 
-cam = Camera.new
+cam = Camera.new(90.0, nx.to_f/ny.to_f)
 
 (ny-1).downto(0) do |j|
   0.upto(nx-1) do |i|
