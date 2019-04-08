@@ -82,4 +82,15 @@ class Vec3
   def reflect(n)
     self - n*2.0*self.dot(n)
   end
+
+  def refract(n, ni_over_nt)
+    uv = self.unit_vector
+    dt = uv.dot(n)
+    discriminant = 1.0 - ni_over_nt*ni_over_nt*(1.0-dt*dt)
+    if discriminant > 0
+      (uv - n*dt)*ni_over_nt - n*Math.sqrt(discriminant)
+    else
+      nil
+    end
+  end
 end
