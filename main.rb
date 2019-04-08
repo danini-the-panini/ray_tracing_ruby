@@ -13,7 +13,7 @@ end
 
 def color(r, world)
   rec = HitRecord.new
-  if world.hit(r, 0.0, Float::INFINITY, rec)
+  if world.hit(r, 0.001, Float::INFINITY, rec)
     target = rec.p + rec.normal + random_in_unit_sphere
     return color(Ray.new(rec.p, target-rec.p), world)*0.5
   else
