@@ -57,6 +57,8 @@ aperture = 2.0
 
 cam = Camera.new(lookfrom, lookat, Vec3.new(0.0, 1.0, 0.0), 20.0, nx.to_f/ny.to_f, aperture, dist_to_focus)
 
+total = nx*ny
+prog = 0
 (ny-1).downto(0) do |j|
   0.upto(nx-1) do |i|
     col = Vec3.new(0.0, 0.0, 0.0)
@@ -74,5 +76,8 @@ cam = Camera.new(lookfrom, lookat, Vec3.new(0.0, 1.0, 0.0), 20.0, nx.to_f/ny.to_
     ib = (255.99*col[2]).to_i
 
     puts "#{ir} #{ig} #{ib}"
+
+    prog += 1
+    $stderr.print("#{(prog.to_f/total.to_f*100.0).to_i}%\r")
   end
 end
