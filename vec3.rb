@@ -41,7 +41,7 @@ class Vec3
   end
 
   def /(t)
-    Vec3.new(t/self.e[0], t/self.e[1], t/self.e[2])
+    Vec3.new(self.e[0]/t, self.e[1]/t, self.e[2]/t)
   end
 
   def dot(v2)
