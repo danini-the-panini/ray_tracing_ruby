@@ -59,7 +59,7 @@ class Vec3
   end
 
   def length
-    (e[0]*e[0] + e[1]*e[1] + e[2]*e[2]).sqrt
+    Math.sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2])
   end
 
   def squared_length
@@ -67,7 +67,7 @@ class Vec3
   end
 
   def make_unit_vector
-    k = 1.0 / (e[0]*e[0] + e[1]*e[1] + e[2]*e[2]).sqrt
+    k = 1.0 / Math.sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2])
     e[0] *= k; e[1] *= k; e[2] *= k
   end
 
