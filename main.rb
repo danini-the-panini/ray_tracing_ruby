@@ -55,6 +55,7 @@ cam = Camera.new
       col += color(r, world)
     end
     col /= ns.to_f
+    col = Vec3.new(Math.sqrt(col[0]), Math.sqrt(col[1]), Math.sqrt(col[2]))
 
     ir = (255.99*col[0]).to_i
     ig = (255.99*col[1]).to_i
