@@ -1,27 +1,15 @@
-require_relative './ray'
+require_relative './sphere'
+require_relative './hitable_list'
 
-def hit_sphere(center, radius, r)
-  oc = r.origin - center
-  a = r.direction.dot(r.direction)
-  b = 2.0 * oc.dot(r.direction)
-  c = oc.dot(oc) - radius*radius
-  discriminant = b*b - 4.0*a*c
-  if discriminant < 0
-    -1.0
+def color(r, world)
+  rec = HitRecord.new
+  if world.hit(r, 0.0, Float::INFINITY, rec)
+    return Vec3.new(rec.normal.x+1.0, rec.normal.y+1.0, rec.normal.z+1.0)*0.5
   else
-    (-b - Math.sqrt(discriminant)) / (2.0*a)
+    unit_direction = r.direction.unit_vector
+    t = 0.5*(unit_direction.y + 1.0)
+    Vec3.new(1.0, 1.0, 1.0)*(1.0-t) + Vec3.new(0.5, 0.7, 1.0)*t
   end
-end
-
-def color(r)
-  t = hit_sphere(Vec3.new(0.0, 0.0, -1.0), 0.5, r)
-  if t > 0.0
-    n = (r.point_at_parameter(t) - Vec3.new(0.0, 0.0, -1.0)).unit_vector
-    return Vec3.new(n.x+1.0, n.y+1.0, n.z+1.0)*0.5
-  end
-  unit_direction = r.direction.unit_vector
-  t = 0.5*(unit_direction.y + 1.0)
-  Vec3.new(1.0, 1.0, 1.0)*(1.0-t) + Vec3.new(0.5, 0.7, 1.0)*t
 end
 
 nx = 200
@@ -36,16 +24,20 @@ horizontal = Vec3.new(4.0, 0.0, 0.0)
 vertical = Vec3.new(0.0, 2.0, 0.0)
 origin = Vec3.new(0.0, 0.0, 0.0)
 
+list = [
+  Sphere.new(Vec3.new(0.0, 0.0, -1.0), 0.5),
+  Sphere.new(Vec3.new(0.0, -100.5, -1.0), 100)
+]
+world = HitableList.new(list)
+
 (ny-1).downto(0) do |j|
   0.upto(nx-1) do |i|
     u = i.to_f / nx.to_f
     v = j.to_f / ny.to_f
-
-
     r = Ray.new(origin, lower_left_corner + horizontal*u + vertical*v)
 
-
-    col = color(r)
+    p = r.point_at_parameter(2.0)
+    col = color(r, world)
 
     ir = (255.99*col[0]).to_i
     ig = (255.99*col[1]).to_i
